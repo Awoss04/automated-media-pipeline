@@ -1,0 +1,8 @@
+# Abhaengigkeiten der Automated Media Pipeline
+# Installieren: python3 -m venv venv && venv/bin/pip install -r requirements.txt
+
+faster-whisper>=1.2.0   # Transkription (CTranslate2, int8) - KEIN torch
+yt-dlp>=2026.8.0       # Download privater YouTube-Videos
+PyYAML>=6.0            # Config-Dateien
+numpy>=2.0             # Audio-Energie-Analyse
+Pillow>=10.0           # Thumbnail- und Text-Rendering

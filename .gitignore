@@ -1,0 +1,43 @@
+# Arbeitsdaten — niemals versionieren (Videodateien, Frames, State)
+data/inbox/*
+data/work/*
+data/clips/*
+data/state/*
+!data/*/.gitkeep
+
+# Logs
+logs/*
+!logs/.gitkeep
+
+# Credentials — NIEMALS committen
+.env
+.env.*
+!.env.example
+cookies.txt
+*.netrc
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Virtuelle Umgebungen
+venv/
+.venv/
+env/
+ENV/
+
+# Modelle / Gewichte
+*.pt
+*.bin
+*.onnx
+*.ct2
+models/
+
+# Werkzeuge / Editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo

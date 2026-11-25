@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "LongformPlan",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Titel des Long-Form-Videos, Deutsch, max. 70 Zeichen."
+    },
+    "description": {
+      "type": "string",
+      "description": "Beschreibung für YouTube, Deutsch, 2-4 Sätze."
+    },
+    "tags": {
+      "type": "array",
+      "description": "5-10 Tags, klein geschrieben, ohne #.",
+      "items": { "type": "string" },
+      "minItems": 5,
+      "maxItems": 10
+    },
+    "chapter_marks": {
+      "type": "array",
+      "description": "Kapitelmarken für den Long-Form-Zusammenschnitt.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "at_sec": {
+            "type": "number",
+            "description": "Position im fertigen Video in Sekunden."
+          },
+          "label": {
+            "type": "string",
+            "description": "Kurzer Kapitelname, Deutsch, max. 40 Zeichen."
+          }
+        },
+        "required": ["at_sec", "label"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["title", "description", "tags", "chapter_marks"],
+  "additionalProperties": false
+}

@@ -1,0 +1,27 @@
+# Kanal-Profile — Zielplattform-spezifische Vorgaben.
+# Ein Profil überschreibt Teile der pipeline.yaml.
+
+channels:
+  shorts:
+    description: "YouTube Shorts / Instagram Reels / TikTok (9:16)"
+    vertical:
+      width: 1080
+      height: 1920
+      max_clip_sec: 90
+      min_clip_sec: 30
+    thumbnail:
+      width: 1080
+      height: 1920
+      max_title_chars: 42
+
+  longform:
+    description: "YouTube Long-Form (16:9) — Zusammenschnitt der Highlights"
+    vertical:
+      width: 1920
+      height: 1080
+      max_clip_sec: 600
+      min_clip_sec: 60
+    thumbnail:
+      width: 1280
+      height: 720
+      max_title_chars: 70

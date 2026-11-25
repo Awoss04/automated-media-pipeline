@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ThumbnailText",
+  "type": "object",
+  "properties": {
+    "headline": {
+      "type": "string",
+      "description": "Grosser Titel auf dem Thumbnail, Deutsch, max. 42 Zeichen, KEIN Zeilenumbruch.",
+      "maxLength": 60
+    },
+    "subline": {
+      "type": "string",
+      "description": "Optionale zweite Zeile, Deutsch, max. 28 Zeichen. Leerer String erlaubt.",
+      "maxLength": 40
+    },
+    "emoji": {
+      "type": "string",
+      "description": "Optionales Emoji als visueller Akzent, z.B. '🔥'. Leerer String erlaubt."
+    },
+    "overlay_position": {
+      "type": "string",
+      "description": "Position des Textes auf dem 9:16-Bild.",
+      "enum": ["top", "middle", "bottom"]
+    }
+  },
+  "required": ["headline", "subline", "emoji", "overlay_position"],
+  "additionalProperties": false
+}

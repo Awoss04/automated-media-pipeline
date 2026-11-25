@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "HighlightRanking",
+  "type": "object",
+  "properties": {
+    "rankings": {
+      "type": "array",
+      "description": "Bewertete Highlight-Kandidaten, absteigend nach Score.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID des Kandidaten, exakt wie im Input."
+          },
+          "score": {
+            "type": "number",
+            "description": "Spannungswert 0-10. 10 = unbedingt veröffentlichen, 0 = wertlos.",
+            "minimum": 0,
+            "maximum": 10
+          },
+          "reason": {
+            "type": "string",
+            "description": "Kurze Begründung auf Deutsch, 1-2 Sätze, konkret."
+          },
+          "title": {
+            "type": "string",
+            "description": "Kurzer, aufregender Titel auf Deutsch, max. 42 Zeichen, ohne Anführungszeichen.",
+            "maxLength": 60
+          },
+          "keywords": {
+            "type": "array",
+            "description": "3-6 Schlagworte auf Deutsch.",
+            "items": { "type": "string" },
+            "minItems": 3,
+            "maxItems": 6
+          },
+          "best_moment_sec": {
+            "type": "number",
+            "description": "Sekunde innerhalb des Clips mit dem stärksten Moment (relativ zum Clip-Start)."
+          }
+        },
+        "required": ["id", "score", "reason", "title", "keywords", "best_moment_sec"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["rankings"],
+  "additionalProperties": false
+}

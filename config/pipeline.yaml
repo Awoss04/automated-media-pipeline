@@ -1,0 +1,142 @@
+# Pipeline-Konfiguration — eine Quelle der Wahrheit für Schwellwerte.
+# Geändert wird nur diese Datei, nie Hardcoded-Werte im Code.
+
+paths:
+  # Alle Pfade relativ zum Projekt-Root.
+  data_dir: "data"
+  inbox_dir: "data/inbox"
+  work_dir: "data/work"
+  clips_dir: "data/clips"
+  state_dir: "data/state"
+  logs_dir: "logs"
+
+ingest:
+  # Maximale Videoqualität für den Download (yt-dlp Format-Selektor).
+  format: "bv*[height<=1080]+ba/b[height<=1080]"
+  # Browser für yt-dlp --cookies-from-browser (nur Browser-NAME, kein Cookie-Pfad).
+  # Installiert auf diesem Rechner: brave, chrome, firefox
+  cookies_from_browser: "brave"
+  # Minimale Dateigrösse, damit ein halber Download nicht als Erfolg gilt.
+  min_file_bytes: 1048576
+
+  # --------------------------------------------------------------- Kanal ---
+  # Welcher YouTube-Kanal wird verarbeitet? Zwei moegliche Quellen:
+  #
+  # 1) Kanal-URL (bevorzugt):
+  #    channel_url: "https://www.youtube.com/@deinKanal/videos"
+  #    Damit werden ALLE Videos des Kanals durchsucht.
+  #
+  # 2) Playlist-URL:
+  #    playlist_url: "https://www.youtube.com/playlist?list=PL..."
+  #
+  # 3) Einzelnes Video:
+  #    video_url: "https://www.youtube.com/watch?v=..."
+  #
+  # Es gilt: die erste gesetzte Quelle gewinnt.
+  channel_url: ""
+  playlist_url: ""
+  video_url: ""
+
+  # Nur Videos herunterladen, die nach diesem Datum hochgeladen wurden.
+  # Format: YYYYMMDD. Leer = kein Filter.
+  dateafter: ""
+
+  # Nur Videos, die in den letzten N Tagen hochgeladen wurden.
+  # Leer = kein Filter. Beispiel: 7 (letzte 7 Tage).
+  max_age_days: ""
+
+  # Maximale Anzahl Videos pro Kanal-Durchlauf (Schutz vor zu langen Laeufen).
+  max_videos: 5
+
+  # Zusaetzlicher yt-dlp-Filter (siehe --match-filters). Leer = keiner.
+  # Beispiel: "duration > 300 & duration < 3600"
+  match_filter: ""
+
+  # Archiv-Datei: verhindert, dass dasselbe Video erneut geladen wird.
+  # Relativ zum Projekt-Root.
+  download_archive: "data/state/downloaded.txt"
+
+  # Private Videos: nur mit Cookies des eingeloggten Browsers zugaenglich.
+  # Der Browser muss auf YouTube angemeldet sein.
+  require_cookies: true
+
+transcribe:
+  # faster-whisper Modell (CTranslate2, int8 auf CPU).
+  # Verfügbar: tiny, base, small, medium, large-v3
+  model: "small"
+  compute_type: "int8"
+  device: "cpu"
+  language: "de"
+  # Sprache "auto" für automatische Spracherkennung.
+  beam_size: 5
+  vad_filter: true
+  # Wort-Timestamps brauchen die Pipeline für präzise Clip-Grenzen.
+  word_timestamps: true
+  # Gate: Anteil der Videolänge, der transkribiert sein muss.
+  min_coverage: 0.95
+
+highlights:
+  # Mindestanzahl Kandidaten, sonst gilt das Gate als nicht bestanden.
+  min_candidates: 3
+  # Kandidatenfenster in Sekunden.
+  min_clip_sec: 30
+  max_clip_sec: 90
+  # Fenster, in dem die Audioenerge als "spannend" gilt.
+  energy_window_sec: 2.0
+  # Mindest-Anteil der Fensterenergie über dem Durchschnitt, damit ein
+  # Fenster als Kandidat gilt (0..1).
+  energy_threshold: 1.35
+
+rank:
+  # Antigravity-Modell für die Bewertung.
+  model: "gemini-3.8-flash-high"
+  # Timeout für den LLM-Aufruf in Sekunden.
+  timeout_sec: 300
+  # Nur Kandidaten mit diesem Score werden zu Clips.
+  min_score: 6.0
+  # Maximale Anzahl Clips pro Video.
+  max_clips: 8
+
+thumbnail:
+  model: "gemini-3.8-flash-medium"
+  timeout_sec: 180
+  width: 1080
+  height: 1920
+  # Maximale Länge des generierten Titels.
+  max_title_chars: 42
+  # Systemschrift für die Render-Reproduzierbarkeit.
+  font_path: "/System/Library/Fonts/Supplemental/Arial Black.ttf"
+  font_outline_path: "/System/Library/Fonts/Supplemental/Arial Bold.ttf"
+  # Farben als Hex (RGBA mit #AARRGGBB).
+  color_text: "#FFFFFFFF"
+  color_outline: "#E6000000"
+  color_gradient_top: "#B3000000"
+  color_gradient_bottom: "#00000000"
+
+vertical:
+  # Zielformat für Shorts/Reels/TikTok.
+  width: 1080
+  height: 1920
+  # Vertikaler Fokus beim Croppen (0..1, 0 = oben, 0.5 = Mitte).
+  focus_y: 0.40
+  # Video-Encoder: h264_videotoolbox (schnell) oder libx264 (kompatibel).
+  encoder: "h264_videotoolbox"
+  video_bitrate: "6M"
+  audio_bitrate: "192k"
+  # Gate: erlaubte Clip-Dauer.
+  min_clip_sec: 30
+  max_clip_sec: 90
+
+longform:
+  model: "gemini-3.8-flash-low"
+  timeout_sec: 240
+  # Mindestlänge des Zusammenschnitts.
+  min_duration_sec: 300
+  encoder: "h264_videotoolbox"
+  video_bitrate: "8M"
+  audio_bitrate: "192k"
+
+cleanup:
+  # Quellvideo nach s06 löschen. Speicher ist auf 256-GB-SSDs knapp.
+  # Achtung: destruktiv — nur mit expliziter Bestätigung aktivieren.
+  delete_source_after_vertical: false
